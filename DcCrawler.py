@@ -65,6 +65,19 @@ def get_config():
         print(rf"Fail to read config file {config_file}")
         return None
     
+def send_adventure(driver):
+    builder = ActionChains(driver)
+    builder.send_keys("/adventure ")
+    builder.send_keys(Keys.ENTER)
+    builder.perform()
+
+def click_join(driver):
+    elements = driver.find_elements(By.CLASS_NAME, "component__43381.button_afdfd9.lookFilled__19298.colorGreen__5f181.sizeSmall__71a98.grow__4c8a4")
+    for element in elements:
+        if element.is_enabled():
+            element.click()
+            break
+
 def main():
     config = get_config()
     if config is None:
@@ -84,19 +97,14 @@ def main():
         expected_conditions.presence_of_element_located((By.CLASS_NAME, "textArea__74543.textAreaSlate_e0e383.slateContainer_b692b3")))
     
     while True:
-        builder = ActionChains(driver)
-        builder.send_keys("/adventure ")
-        builder.send_keys(Keys.ENTER)
-        builder.perform()
+        send_adventure(driver)
 
+        # 等待參加鍵出現
         time.sleep(3)
         
-        elements = driver.find_elements(By.CLASS_NAME, "component__43381.button_afdfd9.lookFilled__19298.colorGreen__5f181.sizeSmall__71a98.grow__4c8a4")
-        for element in elements:
-            if element.is_enabled():
-                element.click()
-                break
+        click_join(driver)
 
+        # 每 40 秒重複一次
         time.sleep(40)
 
 if __name__ == "__main__":

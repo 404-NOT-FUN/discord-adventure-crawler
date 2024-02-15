@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "discord-adventure-crawler"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "discord_adventure_crawler"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+selenium = "^4.17.2"
+webdriver-manager = "^4.0.1"
+pyinstaller = "4.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

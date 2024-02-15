@@ -27,13 +27,11 @@
 
  - ## 如何使用
 
-    Clone 這個專案，或是直接下載壓縮檔:
-
     ```sh
     # 切換到專案目錄下
     cd .\discord-adventure-crawler\
 
-    # 開啟主程式
+    # 執行主程式
     poetry run python DcCrawler.py
     ```
 

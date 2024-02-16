@@ -1,0 +1,8 @@
+{
+    "url": "https://discord.com/channels/479923427965403137/1097075675174817854",
+    "wait_seconds": 300,
+    "retry": 5,
+    "inprivate": true,
+    "send_msg": false,
+    "period_second": 40
+}

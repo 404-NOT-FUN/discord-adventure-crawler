@@ -7,19 +7,21 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from webdriver_manager.core.driver_cache import DriverCacheManager
-from time import sleep
+import time
+import threading
+import os
 from json import load, dump
-from os.path import exists
 from sys import exit
 from tkinter import Tk, Entry, Checkbutton, Label, BooleanVar, Button
 from tkinter.constants import CENTER
-from threading import Thread
 
 def get_options(config):
     options = webdriver.EdgeOptions()
 
     options.set_capability("goog:loggingPrefs",{"performance": "ALL"})
 
+    user_data_dir = os.path.abspath(os.path.join("..", "discord-adventure-crawler", "drivers", "driver_data"))
+    options.add_argument(f"user-data-dir={user_data_dir}")
     options.add_argument("--disable-animations")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument("--disable-infobars")
@@ -58,7 +60,7 @@ def get_options(config):
 def get_config():
     config_file = "config.json"
 
-    if not exists(config_file):
+    if not os.path.exists(config_file):
         print(rf"Config file {config_file} doesn't exist.")
         return None
 
@@ -71,10 +73,53 @@ def get_config():
         print(rf"Fail to read config file {config_file}")
         return None
     
+def send_adventure_request(builder):
+    while True:
+        logged_time = time.strftime("%H:%M:%S", time.localtime())
+        try:
+            builder.send_keys("/adventure ")
+            builder.send_keys(Keys.ENTER)
+            builder.perform()
+
+            print(f"{logged_time}, thread_send_adventure_request sending success")
+    
+        except:
+            print(f"{logged_time}, thread_send_adventure_request failed")
+
+        finally:
+            time.sleep(60)
+
+def scroll_and_wait_for_element(driver):
+    while True:
+        logged_time = time.strftime("%H:%M:%S", time.localtime())
+        # 将页面滚动到底部
+        driver.execute_script("window.scroll(0, document.body.scrollHeight);")
+        time.sleep(2)
+
+        element_found = False
+        elements = driver.find_elements(By.CLASS_NAME, "component__43381.button_afdfd9.lookFilled__19298.colorGreen__5f181.sizeSmall__71a98.grow__4c8a4")
+        for element in elements:
+            if element.is_enabled():
+                driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                time.sleep(2)
+                element.click()
+                print(f"thread_scroll_and_wait_for_element 找到並點擊參加。")
+                element_found = True
+                break
+                    
+        # 根据是否找到元素决定等待时间
+        if element_found:
+            print(f"{logged_time}, thread_scroll_and_wait_for_element 成功，等待120秒。")
+            time.sleep(120)
+        else:
+            print(f"{logged_time}, thread_scroll_and_wait_for_element 失敗，20秒後重試。")
+            time.sleep(20)
+    
 def set_config(config):
     with open("config.json", "w", encoding="utf-8") as f:
         dump(config, f, indent=4)
-    
+
+"""
 def send_adventure(driver):
     builder = ActionChains(driver)
     builder.send_keys("/adventure ")
@@ -87,6 +132,7 @@ def click_join(driver):
         if element.is_enabled():
             element.click()
             break
+"""
 
 def start_driver(config):
     wait_seconds = config["wait_seconds"]
@@ -110,14 +156,15 @@ def start_driver(config):
                     raise
             else:
                 break
+
+        builder = ActionChains(driver)
+        if config["send_msg"]:
+            thread_send_adventure_request = threading.Thread(target=send_adventure_request, args=(builder, ))
+            thread_send_adventure_request.start()
         
-        while True:
-            if config["send_msg"]:
-                send_adventure(driver)
-                sleep(3) # 等待參加鍵出現
-            
-            click_join(driver)
-            sleep(config["period_second"]) # 每 period_second 循環一次
+        thread_scroll_and_wait_for_element = threading.Thread(target=scroll_and_wait_for_element, args=(driver, ))
+        thread_scroll_and_wait_for_element.start()
+
     except:
         print("Error to crawler.")
         return
@@ -128,9 +175,9 @@ def validate_int(user_input):
     else:
         return False
 
-class Threader(Thread):
+class Threader(threading.Thread):
     def __init__(self, config, inprivate_var, send_msg_var, period_second, *args, **kwargs):
-        Thread.__init__(self, *args, **kwargs)
+        threading.Thread.__init__(self, *args, **kwargs)
         self.config = config
         self.inprivate_var = inprivate_var
         self.send_msg_var = send_msg_var

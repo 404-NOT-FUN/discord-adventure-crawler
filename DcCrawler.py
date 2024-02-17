@@ -97,23 +97,27 @@ def scroll_and_wait_for_element(driver):
         time.sleep(2)
 
         element_found = False
-        elements = driver.find_elements(By.CLASS_NAME, "component__43381.button_afdfd9.lookFilled__19298.colorGreen__5f181.sizeSmall__71a98.grow__4c8a4")
-        for element in elements:
-            if element.is_enabled():
-                driver.execute_script("arguments[0].scrollIntoView(true);", element)
-                time.sleep(2)
-                element.click()
-                print(f"thread_scroll_and_wait_for_element 找到並點擊參加。")
-                element_found = True
-                break
+        try:
+            elements = driver.find_elements(By.CLASS_NAME, "component__43381.button_afdfd9.lookFilled__19298.colorGreen__5f181.sizeSmall__71a98.grow__4c8a4")
+            for element in elements:
+                if element.is_enabled():
+                    driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                    time.sleep(2)
+                    element.click()
+                    print(f"thread_scroll_and_wait_for_element 找到並點擊參加。")
+                    element_found = True
+                    break
+        except:
+            print(f"thread_scroll_and_wait_for_element error finding button。")
                     
-        # 根据是否找到元素决定等待时间
-        if element_found:
-            print(f"{logged_time}, thread_scroll_and_wait_for_element 成功，等待120秒。")
-            time.sleep(120)
-        else:
-            print(f"{logged_time}, thread_scroll_and_wait_for_element 失敗，20秒後重試。")
-            time.sleep(20)
+        finally:
+            # 根据是否找到元素决定等待时间
+            if element_found:
+                print(f"{logged_time}, thread_scroll_and_wait_for_element 成功，等待120秒。")
+                time.sleep(120)
+            else:
+                print(f"{logged_time}, thread_scroll_and_wait_for_element 失敗，20秒後重試。")
+                time.sleep(20)
     
 def set_config(config):
     with open("config.json", "w", encoding="utf-8") as f:

@@ -1,8 +1,10 @@
 from tkinter import Tk, Entry, Checkbutton, Label, BooleanVar, Button
-from tkinter.constants import CENTER
+from tkinter.constants import CENTER, SE, SW
+import tkinter.font as tkFont
 from threading import Thread
 from src.utils import *
 from src.crawler import *
+import webbrowser
 
 class Threader(Thread):
     def __init__(self, config, inprivate_var, send_msg_var, *args, **kwargs):
@@ -24,6 +26,7 @@ def main_window(config):
     window.title("Discord Adventure Crawler")
     window.geometry("400x200")
     window.resizable(False, False)
+    window.iconbitmap("icon.ico")  
 
     url_label = Label(text="頻道URL:")
     url_label.place(x=50,y=40,anchor=CENTER)
@@ -43,5 +46,25 @@ def main_window(config):
 
     execute = Button(text="執行", command=lambda: Threader(config=config, inprivate_var=inprivate_var, send_msg_var=send_msg_var, name="save_config_and_start_driver"))
     execute.place(x=200,y=130,anchor=CENTER)
+
+    version = Label(text="版本 2024.02.19")
+    version.place(x=0,y=200,anchor=SW)
+
+    github_label = Label(text="Github", fg="blue")
+    f = tkFont.Font(github_label, github_label.cget("font"))
+    f.configure(underline = True)
+    github_label.configure(font=f)
+    github_label.place(x=400,y=200,anchor=SE)
+    github_label.bind("<Button-1>", lambda x: open_url(url="https://github.com/404-NOT-FUN/discord-adventure-crawler"))
+
+    discord_label = Label(text="Discord", fg="blue")
+    f = tkFont.Font(discord_label, discord_label.cget("font"))
+    f.configure(underline = True)
+    discord_label.configure(font=f)
+    discord_label.place(x=355,y=200,anchor=SE)
+    discord_label.bind("<Button-1>", lambda x: open_url(url="https://discord.gg/XXn5udJsPU"))
     
     window.mainloop()
+
+def open_url(url):
+    webbrowser.open(url, new=0)

@@ -3,6 +3,5 @@
     "wait_seconds": 300,
     "retry": 5,
     "inprivate": true,
-    "send_msg": false,
-    "period_second": 40
+    "send_msg": true
 }

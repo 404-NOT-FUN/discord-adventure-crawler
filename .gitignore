@@ -9,3 +9,4 @@
 .venv
 drivers
 *.log
+config.json

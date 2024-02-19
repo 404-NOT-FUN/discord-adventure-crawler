@@ -74,7 +74,7 @@
 
  - ### 如何安裝
 
-    前往<a href="https://github.com/404-NOT-FUN/discord-adventure-crawler/pulls">Release頁面</a>，下載最新的壓縮檔，檔名為DcCrawler.版本號_Windows.zip
+    前往<a href="https://github.com/404-NOT-FUN/discord-adventure-crawler/releases">Release頁面</a>，下載最新的壓縮檔，檔名為DcCrawler.版本號_Windows.zip
 
  - ### 如何使用
    解壓縮後直接執行資料夾內的 `DcCrawler.exe`

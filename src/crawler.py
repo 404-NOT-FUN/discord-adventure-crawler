@@ -125,6 +125,9 @@ def start_driver(config):
                 break
 
         builder = ActionChains(driver)
+        builder_send_start_msg(config, builder)
+        time.sleep(2)
+
         if config["send_msg"]:
             thread_send_adventure_request = Thread(target=send_adventure_request, args=(builder, ))
             thread_send_adventure_request.start()
@@ -135,3 +138,8 @@ def start_driver(config):
     except:
         logger.error("Error to crawler.")
         return
+
+def builder_send_start_msg(config, builder):
+    builder.send_keys(f"> **Discord Adventure Crawler v{config['version']}** | **[取得最新版本](https://github.com/404-NOT-FUN/discord-adventure-crawler/releases/latest)** | **[Discord 支援伺服器](https://discord.gg/XXn5udJsPU)**")
+    builder.send_keys(Keys.ENTER)
+    builder.perform()

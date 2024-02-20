@@ -7,14 +7,16 @@ from src.crawler import *
 import webbrowser
 
 class Threader(Thread):
-    def __init__(self, config, inprivate_var, send_msg_var, *args, **kwargs):
+    def __init__(self, config, url, inprivate_var, send_msg_var, *args, **kwargs):
         Thread.__init__(self, *args, **kwargs)
         self.config = config
+        self.url = url
         self.inprivate_var = inprivate_var
         self.send_msg_var = send_msg_var
         self.daemon = True
         self.start()
     def run(self):
+        self.config["url"] = self.url.get()
         self.config["inprivate"] = self.inprivate_var.get()
         self.config["send_msg"] = self.send_msg_var.get()
 
@@ -44,10 +46,10 @@ def main_window(config):
     send_msg.place(x=200,y=80,anchor=CENTER)
     send_msg.select() if config["send_msg"] else send_msg.deselect()
 
-    execute = Button(text="執行", command=lambda: Threader(config=config, inprivate_var=inprivate_var, send_msg_var=send_msg_var, name="save_config_and_start_driver"))
+    execute = Button(text="執行", command=lambda: Threader(config=config, url=url, inprivate_var=inprivate_var, send_msg_var=send_msg_var, name="save_config_and_start_driver"))
     execute.place(x=200,y=130,anchor=CENTER)
 
-    version = Label(text="版本 2024.02.19")
+    version = Label(text=f"版本 {config['version']}")
     version.place(x=0,y=200,anchor=SW)
 
     github_label = Label(text="Github", fg="blue")

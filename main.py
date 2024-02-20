@@ -40,6 +40,7 @@ def main():
         logger.error("Fail to read config file.")
         sys.exit(1)
 
+    config["version"] = "2024.02.20"
     main_window(config)
 
 if __name__ == "__main__":
